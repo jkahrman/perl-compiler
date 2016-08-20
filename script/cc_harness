@@ -7,7 +7,7 @@ if ($ENV{PERL_CORE}) {
   $libdir = $coredir = "../..";
 } else {
   $libdir  = $Config{prefix} . "/lib";
-  $coredir = $ENV{PERL_SRC} || $Config{archlib}."/CORE";
+  $coredir = $ENV{PERL_SRC} || $Config{archlibexp}."/CORE";
 }
 my $useshrplib = $Config{useshrplib} eq 'true';
 my $libs = $Config{libs};
@@ -63,7 +63,7 @@ if (grep(/^-[cES]$/, @ARGV)) { # compile-only with -c -E or -S
 # another ldopts bug: ensure Win32CORE gets added.
 if ($^O =~ /^(cygwin|MSWin32|msys)/) {
     if (index($linkargs, "Win32CORE") < 0) {
-        my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlib};
+        my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlibexp};
         my $win32core = "-L$archdir/lib/auto/Win32CORE -lWin32CORE";
         if (-e "$archdir/lib/auto/Win32CORE/Win32CORE.a") {
             $win32core = "$archdir/lib/auto/Win32CORE/Win32CORE.a";
@@ -129,7 +129,7 @@ sub cc_harness_msvc {
         $link .= " /DEBUG";
     }
     if (index($link, "Win32CORE") < 0) {
-        my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlib};
+        my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlibexp};
         my $win32core = "-L$archdir/lib/auto/Win32CORE -lWin32CORE";
         if (-e "$archdir/lib/auto/Win32CORE/Win32CORE.lib") {
             $win32core = "$archdir/lib/auto/Win32CORE/Win32CORE.lib";

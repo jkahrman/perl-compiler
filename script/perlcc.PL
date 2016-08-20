@@ -654,7 +654,7 @@ sub cc_harness_msvc {
 
     # another ldopts bug: ensure Win32CORE gets added.
     if (index($link, "Win32CORE") < 0) {
-        my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlib};
+        my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlibexp};
         my $win32core = "-L$archdir/lib/auto/Win32CORE -lWin32CORE";
         if (-e "$archdir/lib/auto/Win32CORE/Win32CORE.a") {
             $win32core = "$archdir/lib/auto/Win32CORE/Win32CORE.a";
@@ -737,7 +737,7 @@ print OUT <<'!NO!SUBS!';
     # another ldopts bug: ensure Win32CORE gets added, before -lperl
     if (is_winlike()) {
         if (index($ldopts, "Win32CORE") < 0) {
-           my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlib};
+           my $archdir = $ENV{PERL_CORE} ? "../.." : $Config{archlibexp};
            my $win32core = "-L$archdir/lib/auto/Win32CORE -lWin32CORE";
            if (-e "$archdir/lib/auto/Win32CORE/Win32CORE.a") {
                $win32core = "$archdir/lib/auto/Win32CORE/Win32CORE.a";
@@ -754,7 +754,7 @@ print OUT <<'!NO!SUBS!';
         $libdir = $coredir = "../.."; # not includedir, which is ../../lib/CORE on windows
     } else {
         $libdir  = $Config{prefix} . "/lib";
-        $coredir = $ENV{PERL_SRC} || $Config{archlib}."/CORE";
+        $coredir = $ENV{PERL_SRC} || $Config{archlibexp}."/CORE";
     }
     if ($extra_libs) {
         # splice extra_libs after $Config{ldopts} before @archives
@@ -839,11 +839,12 @@ sub yclept {
         }
     }
     my %OINC;
-    $OINC{$Config{$_}}++ for (qw(privlib archlib sitelib sitearch vendorlib vendorarch));
+    $OINC{$Config{$_}}++ for (qw(privlibexp archlibexp sitelibexp
+                                 sitearchexp vendorlibexp vendorarchexp));
     $OINC{'.'}++ unless ${^TAINT};
     $OINC{$_}++ for split ':', $Config{otherlibdirs};
     if (my $incver = $Config{inc_version_list}) {
-        my $incpre = dirname($Config{sitelib});
+        my $incpre = dirname($Config{sitelibexp});
         $OINC{$_}++ for map { File::Spec->catdir($incpre,$_) } split(' ',$incver);
         $OINC{$incpre}++;
     }
